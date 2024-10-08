@@ -1,6 +1,8 @@
 package com.pluralsight.quotes;
+
 import java.util.Scanner;
 import java.util.Random;
+
 public class FamousQuotes {
     public static void main(String[] args) {
         String[] famousQuotes = {" ", "The only limit to our realization of tomorrow is our doubts of today. - Franklin D. Roosevelt",
@@ -15,14 +17,16 @@ public class FamousQuotes {
                 "What lies behind us and what lies before us are tiny matters compared to what lies within us. - Ralph Waldo Emerson"};
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
+        boolean loops = true;
 
+        while(loops) {
         System.out.println("Would you like to choose yourself (Y) or random (N)? ");
         String choice = scanner.nextLine();
 
-
-
-
-            if (choice.equalsIgnoreCase("y")) {
+            if (choice.equalsIgnoreCase("exit")) {
+                loops = false;
+            }
+            else if (choice.equalsIgnoreCase("y")) {
                 try {
                     System.out.println("Please Select 1 - 10");
                     int input = scanner.nextInt();
@@ -41,5 +45,7 @@ public class FamousQuotes {
             }
 
 
+        }
+        System.out.println("All Done");
     }
 }
