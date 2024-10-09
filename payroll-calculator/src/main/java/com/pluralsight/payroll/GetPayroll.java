@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.management.PlatformLoggingMXBean;
-
+import java.util.ArrayList;
 
 public class GetPayroll {
     public static void main(String[] args) throws IOException {
@@ -17,9 +17,11 @@ public class GetPayroll {
         bufferedReader.readLine();
         String input;
 
-        PayrollCalculator[] employee = new PayrollCalculator[4];
 
-        while((input =bufferedReader.readLine()) !=null)
+
+
+        PayrollCalculator[] employee = new PayrollCalculator[4];
+      while((input =bufferedReader.readLine()) !=null)
         {
             String[] employeeParts = input.split("\\|");
             int id = Integer.parseInt (employeeParts[0]);
@@ -29,7 +31,7 @@ public class GetPayroll {
             p = new PayrollCalculator(id, name, hoursWorked, payRate);
 
             System.out.printf("Employee ID: %d, Name: %s, Gross Pay: %.2f%n",
-                    p.getId(), p.getHoursWorked(), p.getGrossPay());
+                    p.getId(), p.getName(), p.getGrossPay());
         }
 
 
