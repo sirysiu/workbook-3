@@ -1,6 +1,7 @@
 package com.pluralsight.store;
 
 import java.io.*;
+import java.nio.Buffer;
 import java.nio.file.attribute.UserPrincipal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class OnlineStore {
 
         Products products = null;
         ArrayList<Products> productsList = new ArrayList<>();
-        Search search;
+        Search search = new Search();
         Scanner scanner = new Scanner(System.in);
         System.out.println("""
                 =====================
@@ -33,9 +34,10 @@ public class OnlineStore {
 
             if (input == 1) {
                 String userInput;
+                String sku = "";
                 while ((userInput = bufferedReader.readLine()) != null) {
                     String[] productParts = userInput.split("\\|");
-                    String sku = productParts[0];
+                    sku = productParts[0];
                     String name = productParts[1];
                     double prices = Double.parseDouble(productParts[2]);
                     String department = productParts[3];
@@ -43,29 +45,59 @@ public class OnlineStore {
                     System.out.printf("Sku: %s, Name: %s, Price: %.2f, Department: %s%n",
                             products.getSku(), products.getName(), products.getPrice(), products.getDepartment());
                 }
-                System.out.println("\nType to search or exit[x]? ");
-                String inputSearch = scanner.nextLine();
-                search = new Search();
-                if (inputSearch.equalsIgnoreCase("name"));
-                {
-                    System.out.println(search);
+
+
+                System.out.println("Enter Sku to add to Cart (back to return): ");
+                String skuInput = scanner.nextLine();
+
+
+                if (skuInput.equalsIgnoreCase(sku)) {
+                    search.addProduct(products);
+                    System.out.println(products.getName() + "added to cart. ");
                 }
 
+//                    for (Products searchProduct : productsList) {
+//                        if (searchProduct.getSku().equals(skuInput)) {
+//                            search.addProduct(searchProduct);
+//                            System.out.println(products.getName() + "added to cart. ");
+//
+//                        }
+//                    }
 
-        }  if (input == 2) {
-                searchAction("launch");
-                String searchTerm;
 
-                do {
-                    System.out.println("Nothing At the moment. Please add item: ");
-                    searchTerm = scanner.nextLine();
+//
 
-                    if (!searchTerm.equalsIgnoreCase("x")) {
-                        searchAction("Item added: " + searchTerm);
-                    }
-                } while (!searchTerm.equalsIgnoreCase("X"));
 
-                searchAction("exit");
+            }  if (input == 2) {
+                search.displayCart();
+
+//                searchAction("launch");
+//                String searchTerm;
+//
+//                do {
+//                    displayCart();
+//                    System.out.println("""
+//
+//                            To Remove [R] || Exit [X] || Display Cart [D]
+//
+//                            Otherwise enter items:
+//
+//                            """);
+//                    searchTerm = scanner.nextLine();
+//
+//                    if (searchTerm.equalsIgnoreCase("R")){
+//                        removeLastLog();
+//                        System.out.println("All items Removed");
+//                    }
+//                  else if (!searchTerm.equalsIgnoreCase("x")) {
+//                        searchAction("Item added: " + searchTerm);
+//                    }
+//                } while (!searchTerm.equalsIgnoreCase("X"));
+//
+//                searchAction("exit");
+            }
+            if (input == 3) {
+                System.out.println("You are Exited");
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -86,6 +118,46 @@ public class OnlineStore {
 
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+    private static void displayCart() {
+        System.out.println("Current Cart: ");
+        try (BufferedReader reader = new BufferedReader(new FileReader(CART_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private static void removeLastLog() {
+        ArrayList<String> cartItems = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(CART_FILE))){
+            String line;
+            while ((line = reader.readLine()) !=null) {
+                cartItems.add(line);
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (!cartItems.isEmpty()) {
+            cartItems.remove(cartItems.size() - 1);
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(CART_FILE))) {
+                for (String cart : cartItems) {
+                    writer.write(cart);
+                    writer.newLine();
+                }
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

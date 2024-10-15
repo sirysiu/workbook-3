@@ -1,43 +1,37 @@
 package com.pluralsight.store;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.List;
 
 public class Search {
-
+    private List<Products> items;
 
     public Search() {
+        this.items = new ArrayList<>();
+    }
 
-        //ArrayList<Products> productsList = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Search: ");
-        String searchTerm = scanner.nextLine().toLowerCase();
+    public void addProduct(Products products) {
+        items.add(products);
 
-        if (searchTerm.equalsIgnoreCase("name")) ;
-        {
+    }
 
-            try (FileReader fileReader = new FileReader("./src/main/resources/products.csv");
-                 BufferedReader bufferedReader = new BufferedReader(fileReader)) {
-                bufferedReader.readLine();
+    public void removeProducts(String sku) {
+        items.removeIf(item -> item.getSku().equals(sku));
+    }
 
-                String userInput;
-                while ((userInput = bufferedReader.readLine()) != null) {
-                    String[] productParts = userInput.split("\\|");
-                    String sku = productParts[0];
-                    String name = productParts[1];
-                    double prices = Double.parseDouble(productParts[2]);
-                    String department = productParts[3];
-                    Products products = new Products(sku, name, prices, department);
-                    System.out.printf("Product Name: %s%n", products.getName());
+    public double totalPrice() {
+        return items.stream().mapToDouble(Products::getPrice).sum();
 
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+    }
+
+    public void displayCart() {
+        for (Products item : items) {
+            System.out.println(item.getName() + "- $" + item.getPrice());
         }
+        System.out.printf("Total $%.2f%n", totalPrice());
+    }
+
+    public List<Products> getItems() {
+        return items;
     }
 }
